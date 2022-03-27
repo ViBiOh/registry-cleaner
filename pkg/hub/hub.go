@@ -39,6 +39,10 @@ func New(ctx context.Context, username, password, owner string) (App, error) {
 		return App{}, err
 	}
 
+	if len(owner) == 0 {
+		owner = username
+	}
+
 	return App{
 		req:   request.New().URL("https://hub.docker.com/v2").Header("Authorization", fmt.Sprintf("JWT %s", jwt)),
 		owner: owner,
