@@ -7,7 +7,7 @@
 ## Getting started
 
 ```bash
-go install github.com/ViBiOh/registry-cleaner/cmd/registry-cleaner@latest
+go install github.com/ViBiOh/registry-cleaner@latest
 
 for repo in $(registry-cleaner -username "vibioh" -password "secret" -list); do
   registry-cleaner -username "vibioh" -password "secret" -image "${repo}" -grep ".*"
