@@ -20,12 +20,16 @@ Be careful when using the CLI values, if someone list the processes on the syste
 
 ```bash
 Usage of registry-cleaner:
-  -dryRun
-        [cleaner] Dry run mode {REGISTRY_CLEANER_DRY_RUN}
+  -delete
+        [cleaner] Perform delete {REGISTRY_CLEANER_DELETE}
   -grep string
-        [registry] Matching tags regexp {REGISTRY_CLEANER_GREP}
+        [cleaner] Matching tags regexp {REGISTRY_CLEANER_GREP}
   -image string
         [registry] Image name {REGISTRY_CLEANER_IMAGE}
+  -invert
+        [cleaner] Invert alphabetic order {REGISTRY_CLEANER_INVERT}
+  -last
+        [cleaner] Keep only last tag found, in alphabetic order {REGISTRY_CLEANER_LAST}
   -loggerJson
         [logger] Log format as JSON {REGISTRY_CLEANER_LOGGER_JSON}
   -loggerLevel string

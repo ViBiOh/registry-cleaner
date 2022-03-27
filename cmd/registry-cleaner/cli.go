@@ -34,8 +34,10 @@ func main() {
 	username := flags.String(fs, "", "registry", "Username", "Registry username", "", nil)
 	password := flags.String(fs, "", "registry", "Password", "Registry password", "", nil)
 	image := flags.String(fs, "", "registry", "Image", "Image name", "", nil)
-	grep := flags.String(fs, "", "registry", "Grep", "Matching tags regexp", "", nil)
-	dryRun := flags.Bool(fs, "", "cleaner", "DryRun", "Dry run mode", false, nil)
+	grep := flags.String(fs, "", "cleaner", "Grep", "Matching tags regexp", "", nil)
+	last := flags.Bool(fs, "", "cleaner", "Last", "Keep only last tag found, in alphabetic order", false, nil)
+	invert := flags.Bool(fs, "", "cleaner", "Invert", "Invert alphabetic order", false, nil)
+	delete := flags.Bool(fs, "", "cleaner", "Delete", "Perform delete", false, nil)
 
 	logger.Fatal(fs.Parse(os.Args[1:]))
 
@@ -73,13 +75,11 @@ func main() {
 		logger.Fatal(fmt.Errorf("unable to create registry client: %s", err))
 	}
 
-	err = service.Tags(context.Background(), imageName, func(tag string) {
-		if !matcher.MatchString(tag) {
-			return
-		}
+	var lastTag string
 
-		if *dryRun {
-			logger.Warn("%s:%s is matching", imageName, tag)
+	handleTag := func(tag string) {
+		if !*delete {
+			logger.Warn("%s:%s is eligible to deletion", imageName, tag)
 			return
 		}
 
@@ -88,6 +88,27 @@ func main() {
 			logger.Fatal(fmt.Errorf("unable to delete `%s:%s`: %s", imageName, tag, err))
 		}
 		logger.Info("%s:%s deleted!", imageName, tag)
+	}
+
+	err = service.Tags(context.Background(), imageName, func(tag string) {
+		if !matcher.MatchString(tag) {
+			return
+		}
+
+		if *last {
+			if len(lastTag) == 0 {
+				lastTag = tag
+				return
+			}
+
+			if (*invert && tag < lastTag) || tag > lastTag {
+				handleTag(lastTag)
+				lastTag = tag
+				return
+			}
+		}
+
+		handleTag(tag)
 	})
 
 	if err != nil {
