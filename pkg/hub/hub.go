@@ -15,7 +15,13 @@ const pageSize = 100
 
 // App of package
 type App struct {
-	req request.Request
+	req   request.Request
+	owner string
+}
+
+type listResult struct {
+	Namespace string `json:"namespace"`
+	Name      string `json:"name"`
 }
 
 type tagResponse struct {
@@ -27,15 +33,36 @@ type tagResult struct {
 }
 
 // New creates new App from Config
-func New(ctx context.Context, username, password string) (App, error) {
+func New(ctx context.Context, username, password, owner string) (App, error) {
 	jwt, err := login(ctx, username, password)
 	if err != nil {
 		return App{}, err
 	}
 
 	return App{
-		req: request.New().URL("https://hub.docker.com/v2/repositories").Header("Authorization", fmt.Sprintf("JWT %s", jwt)),
+		req:   request.New().URL("https://hub.docker.com/v2").Header("Authorization", fmt.Sprintf("JWT %s", jwt)),
+		owner: owner,
 	}, nil
+}
+
+// Repositories list repositories
+func (a App) Repositories(ctx context.Context) ([]string, error) {
+	resp, err := a.req.Method(http.MethodGet).Path(fmt.Sprintf("/users/%s/repositories/?page_size=100", a.owner)).Send(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var repositories []listResult
+	if err = httpjson.Read(resp, &repositories); err != nil {
+		return nil, fmt.Errorf("unable to parse json: %s", err)
+	}
+
+	output := make([]string, len(repositories))
+	for i, repository := range repositories {
+		output[i] = fmt.Sprintf("%s/%s", repository.Namespace, repository.Name)
+	}
+
+	return output, nil
 }
 
 // Tags list tags for a given image
@@ -51,7 +78,7 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 		}
 	}()
 
-	resp, err := a.req.Method(http.MethodGet).Path(fmt.Sprintf("/%s/tags/?page_size=1", image)).Send(ctx, nil)
+	resp, err := a.req.Method(http.MethodGet).Path(fmt.Sprintf("/repositories/%s/tags/?page_size=1", image)).Send(ctx, nil)
 	if err != nil {
 		return err
 	}

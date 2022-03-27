@@ -6,9 +6,17 @@
 
 ## Getting started
 
-Golang binary is built with static link. You can download it directly from the [Github Release page](https://github.com/ViBiOh/registry-cleaner/releases) or build it by yourself by cloning this repo and running `make`.
+```bash
+go install github.com/ViBiOh/registry-cleaner/cmd/registry-cleaner@latest
 
-A Docker image is available for `amd64`, `arm` and `arm64` platforms on Docker Hub: [vibioh/registry-cleaner](https://hub.docker.com/r/vibioh/registry-cleaner/tags).
+for repo in $(registry-cleaner -username "vibioh" -password "secret" -list); do
+  registry-cleaner -username "vibioh" -password "secret" -image "${repo}" -grep ".*"
+done
+
+registry-cleaner -image "vibioh/fibr" -username "vibioh" -password "secret" -grep "[0-9]{12}" -last # keep only the last image that match regexp (which is a timestamp)
+```
+
+Golang binary is built with static link. You can download it directly from the [Github Release page](https://github.com/ViBiOh/registry-cleaner/releases), use the above command line or build it by yourself by cloning this repo and running `make`.
 
 You can configure app by passing CLI args or environment variables (cf. [Usage](#usage) section). CLI override environment variables.
 
@@ -30,6 +38,8 @@ Usage of registry-cleaner:
         [cleaner] Invert alphabetic order {REGISTRY_CLEANER_INVERT}
   -last
         [cleaner] Keep only last tag found, in alphabetic order {REGISTRY_CLEANER_LAST}
+  -list
+        [cleaner] List repositories and doesn't do anything else {REGISTRY_CLEANER_LIST}
   -loggerJson
         [logger] Log format as JSON {REGISTRY_CLEANER_LOGGER_JSON}
   -loggerLevel string
@@ -40,6 +50,8 @@ Usage of registry-cleaner:
         [logger] Key for message in JSON {REGISTRY_CLEANER_LOGGER_MESSAGE_KEY} (default "message")
   -loggerTimeKey string
         [logger] Key for timestamp in JSON {REGISTRY_CLEANER_LOGGER_TIME_KEY} (default "time")
+  -owner string
+        [registry] For Docker Hub, fallback to username if not defined {REGISTRY_CLEANER_OWNER}
   -password string
         [registry] Registry password {REGISTRY_CLEANER_PASSWORD}
   -uRL string

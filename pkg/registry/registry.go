@@ -27,6 +27,11 @@ func New(url, username, password string) (App, error) {
 	}, nil
 }
 
+// Repositories list repositories
+func (a App) Repositories(_ context.Context) ([]string, error) {
+	return a.client.Repositories()
+}
+
 // Tags list tags for a given image
 func (a App) Tags(ctx context.Context, image string, handler func(string)) error {
 	tags, err := a.client.Tags(image)
