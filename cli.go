@@ -49,10 +49,7 @@ func main() {
 	logger.Global(logger.New(loggerConfig))
 	defer logger.Close()
 
-	registryURL := strings.TrimSpace(*url)
-	if len(registryURL) == 0 {
-		logger.Fatal(errors.New("-url flag is required"))
-	}
+	registryURL, imageName, matcher := checkParam(*url, *image, *grep, *list)
 
 	var service RegistryService
 	var err error
@@ -77,21 +74,8 @@ func main() {
 		return
 	}
 
-	imageName, matcher := checkParam(*image, *grep)
-
 	var lastTag string
-	handleTag := func(tag string) {
-		if !*delete {
-			logger.Warn("%s:%s is eligible to deletion", imageName, tag)
-			return
-		}
-
-		err = service.Delete(context.Background(), imageName, tag)
-		if err != nil {
-			logger.Fatal(fmt.Errorf("unable to delete `%s:%s`: %s", imageName, tag, err))
-		}
-		logger.Info("%s:%s deleted!", imageName, tag)
-	}
+	var handled bool
 
 	limiter := concurrent.NewLimited(uint64(runtime.NumCPU()))
 
@@ -101,20 +85,13 @@ func main() {
 		}
 
 		if *last {
-			if len(lastTag) == 0 {
-				lastTag = tag
-				return
-			}
-
-			if (*invert && tag < lastTag) || tag > lastTag {
-				handleTag(lastTag)
-				lastTag = tag
+			if lastTag, handled = lastHandler(service, *invert, *delete, imageName, tag, lastTag); handled {
 				return
 			}
 		}
 
 		limiter.Go(func() {
-			handleTag(tag)
+			tagHandler(service, *delete, imageName, tag)
 		})
 	})
 
@@ -125,15 +102,49 @@ func main() {
 	limiter.Wait()
 }
 
-func checkParam(image, grep string) (string, *regexp.Regexp) {
+func lastHandler(service RegistryService, invert, delete bool, image, tag, lastTag string) (string, bool) {
+	if len(lastTag) == 0 {
+		return tag, true
+	}
+
+	if (invert && tag < lastTag) || tag > lastTag {
+		tagHandler(service, delete, image, lastTag)
+		return tag, true
+	}
+
+	return lastTag, false
+}
+
+func tagHandler(service RegistryService, delete bool, image, tag string) {
+	if !delete {
+		logger.Warn("%s:%s is eligible to deletion", image, tag)
+		return
+	}
+
+	if err := service.Delete(context.Background(), image, tag); err != nil {
+		logger.Fatal(fmt.Errorf("unable to delete `%s:%s`: %s", image, tag, err))
+	}
+	logger.Info("%s:%s deleted!", image, tag)
+}
+
+func checkParam(url, image, grep string, list bool) (string, string, *regexp.Regexp) {
+	registryURL := strings.TrimSpace(url)
+	if len(registryURL) == 0 {
+		logger.Fatal(errors.New("url is required"))
+	}
+
+	if list {
+		return registryURL, "", nil
+	}
+
 	imageName := strings.ToLower(strings.TrimSpace(image))
 	if len(imageName) == 0 {
-		logger.Fatal(errors.New("-image flag is required"))
+		logger.Fatal(errors.New("image is required"))
 	}
 
 	grepValue := strings.TrimSpace(grep)
 	if len(grepValue) == 0 {
-		logger.Fatal(errors.New("-grep flag is required"))
+		logger.Fatal(errors.New("grep pattern is required"))
 	}
 
 	matcher, err := regexp.Compile(grepValue)
@@ -145,5 +156,5 @@ func checkParam(image, grep string) (string, *regexp.Regexp) {
 		logger.Fatal(fmt.Errorf("unable to create registry client: %s", err))
 	}
 
-	return imageName, matcher
+	return registryURL, imageName, matcher
 }
