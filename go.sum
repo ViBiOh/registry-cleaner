@@ -3,8 +3,8 @@ github.com/OpenPeeDeeP/depguard v1.0.0/go.mod h1:7/4sitnI9YlQgTLLk734QlzXT8DuHVn
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/ViBiOh/flags v1.0.0 h1:ECiQMH2tK04PaCkPRuziWAtxYGtx2Ej8O15ZZ2Jx4Ww=
 github.com/ViBiOh/flags v1.0.0/go.mod h1:W0YgB4Nqou2j/2vevgO3kyrcS2f+ci/+w+jDGzVZilk=
-github.com/ViBiOh/httputils/v4 v4.39.4 h1:clRIg6zdrtk3ycxhHHNqDY3nFrbkfkeYMAbV/AWZ4+A=
-github.com/ViBiOh/httputils/v4 v4.39.4/go.mod h1:glut7ePwgGFHhJ1ZePxLhfY1JW8hyd5LthZsFsCm6Fg=
+github.com/ViBiOh/httputils/v4 v4.41.0 h1:BPtZJKaE/4WXqt4Sz8xON1T4QlRjpZD0RV8PPVyV4GE=
+github.com/ViBiOh/httputils/v4 v4.41.0/go.mod h1:ajHAkkVQYTWhcRT4/6wL7FvXHU7GAfeJ0WZ0DpO6Yu8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
