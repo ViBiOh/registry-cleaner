@@ -15,8 +15,8 @@ const pageSize = 100
 
 // App of package
 type App struct {
-	req   request.Request
 	owner string
+	req   request.Request
 }
 
 type listResult struct {
