@@ -3,7 +3,7 @@ module github.com/ViBiOh/registry-cleaner
 go 1.18
 
 require (
-	github.com/ViBiOh/flags v1.0.0
+	github.com/ViBiOh/flags v1.1.0
 	github.com/ViBiOh/httputils/v4 v4.43.0
 	github.com/heroku/docker-registry-client v0.0.0-20211012143308-9463674c8930
 )
