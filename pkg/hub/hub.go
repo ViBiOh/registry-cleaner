@@ -58,7 +58,7 @@ func (a App) Repositories(ctx context.Context) ([]string, error) {
 
 	var repositories []listResult
 	if err = httpjson.Read(resp, &repositories); err != nil {
-		return nil, fmt.Errorf("unable to parse json: %s", err)
+		return nil, fmt.Errorf("parse json: %s", err)
 	}
 
 	output := make([]string, len(repositories))
@@ -89,7 +89,7 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 
 	var tagsCount tagResponse
 	if err = httpjson.Read(resp, &tagsCount); err != nil {
-		return fmt.Errorf("unable to parse tags' count: %s", err)
+		return fmt.Errorf("parse tags' count: %s", err)
 	}
 
 	for page := 1; page <= int(math.Ceil(float64(tagsCount.Count)/pageSize)); page++ {
@@ -99,7 +99,7 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 		}
 
 		if err = httpjson.Stream(resp.Body, tags, "results", false); err != nil {
-			return fmt.Errorf("unable to parse json: %s", err)
+			return fmt.Errorf("parse json: %s", err)
 		}
 	}
 
@@ -113,11 +113,11 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 func (a App) Delete(ctx context.Context, image, tag string) error {
 	resp, err := a.req.Method(http.MethodDelete).Path(fmt.Sprintf("/repositories/%s/tags/%s/", image, tag)).Send(ctx, nil)
 	if err != nil {
-		return fmt.Errorf("unable to delete tag: %s", err)
+		return fmt.Errorf("delete tag: %s", err)
 	}
 
 	if err = request.DiscardBody(resp.Body); err != nil {
-		return fmt.Errorf("unable to discard body: %s", err)
+		return fmt.Errorf("discard body: %s", err)
 	}
 
 	return nil
@@ -131,12 +131,12 @@ func login(ctx context.Context, username, password string) (string, error) {
 
 	resp, err := request.Post("https://hub.docker.com/v2/users/login/").AcceptJSON().JSON(context.Background(), loginPayload)
 	if err != nil {
-		return "", fmt.Errorf("unable to login to Docker Hub: %s", err)
+		return "", fmt.Errorf("login to Docker Hub: %s", err)
 	}
 
 	var output map[string]string
 	if err = httpjson.Read(resp, &output); err != nil {
-		return "", fmt.Errorf("unable to parse login response from Docker Hub: %s", err)
+		return "", fmt.Errorf("parse login response from Docker Hub: %s", err)
 	}
 
 	return output["token"], nil

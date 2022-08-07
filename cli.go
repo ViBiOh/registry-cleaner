@@ -61,13 +61,13 @@ func main() {
 	}
 
 	if err != nil {
-		logger.Fatal(fmt.Errorf("unable to create registry client: %s", err))
+		logger.Fatal(fmt.Errorf("create registry client: %s", err))
 	}
 
 	if *list {
 		repositories, err := service.Repositories(context.Background())
 		if err != nil {
-			logger.Fatal(fmt.Errorf("unable to list repositories: %s", err))
+			logger.Fatal(fmt.Errorf("list repositories: %s", err))
 		}
 
 		fmt.Printf("%s", strings.Join(repositories, "\n"))
@@ -96,7 +96,7 @@ func main() {
 	})
 
 	if err != nil {
-		logger.Fatal(fmt.Errorf("unable to list tags: %s", err))
+		logger.Fatal(fmt.Errorf("list tags: %s", err))
 	}
 
 	limiter.Wait()
@@ -122,7 +122,7 @@ func tagHandler(service RegistryService, delete bool, image, tag string) {
 	}
 
 	if err := service.Delete(context.Background(), image, tag); err != nil {
-		logger.Fatal(fmt.Errorf("unable to delete `%s:%s`: %s", image, tag, err))
+		logger.Fatal(fmt.Errorf("delete `%s:%s`: %s", image, tag, err))
 	}
 	logger.Info("%s:%s deleted!", image, tag)
 }
@@ -149,11 +149,11 @@ func checkParam(url, image, grep string, list bool) (string, string, *regexp.Reg
 
 	matcher, err := regexp.Compile(grepValue)
 	if err != nil {
-		logger.Fatal(fmt.Errorf("unable to compile grep regexp: %s", err))
+		logger.Fatal(fmt.Errorf("compile grep regexp: %s", err))
 	}
 
 	if err != nil {
-		logger.Fatal(fmt.Errorf("unable to create registry client: %s", err))
+		logger.Fatal(fmt.Errorf("create registry client: %s", err))
 	}
 
 	return registryURL, imageName, matcher

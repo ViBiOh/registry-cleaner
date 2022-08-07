@@ -50,11 +50,11 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 func (a App) Delete(_ context.Context, image, tag string) error {
 	digest, err := a.client.ManifestDigest(image, tag)
 	if err != nil {
-		return fmt.Errorf("unable to get manifest: %s", err)
+		return fmt.Errorf("get manifest: %s", err)
 	}
 
 	if err = a.client.DeleteManifest(image, digest); err != nil {
-		return fmt.Errorf("unable to delete manifest: %s", err)
+		return fmt.Errorf("delete manifest: %s", err)
 	}
 
 	return nil
