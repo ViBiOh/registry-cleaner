@@ -16,7 +16,7 @@ done
 registry-cleaner -image "vibioh/fibr" -username "vibioh" -password "secret" -grep "[0-9]{12}" -last # keep only the last image that match regexp (which is a timestamp)
 ```
 
-Golang binary is built with static link. You can download it directly from the [Github Release page](https://github.com/ViBiOh/registry-cleaner/releases), use the above command line or build it by yourself by cloning this repo and running `make`.
+Golang binary is built with static link. You can download it directly from the [GitHub Release page](https://github.com/ViBiOh/registry-cleaner/releases), use the above command line or build it by yourself by cloning this repo and running `make`.
 
 You can configure app by passing CLI args or environment variables (cf. [Usage](#usage) section). CLI override environment variables.
 
