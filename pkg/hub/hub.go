@@ -51,7 +51,7 @@ func New(ctx context.Context, username, password, owner string) (App, error) {
 
 // Repositories list repositories
 func (a App) Repositories(ctx context.Context) ([]string, error) {
-	resp, err := a.req.Method(http.MethodGet).Path(fmt.Sprintf("/users/%s/repositories/?page_size=100", a.owner)).Send(ctx, nil)
+	resp, err := a.req.Method(http.MethodGet).Path("/users/%s/repositories/?page_size=100", a.owner).Send(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 		}
 	}()
 
-	resp, err := a.req.Method(http.MethodGet).Path(fmt.Sprintf("/repositories/%s/tags/?page_size=1", image)).Send(ctx, nil)
+	resp, err := a.req.Method(http.MethodGet).Path("/repositories/%s/tags/?page_size=1", image).Send(ctx, nil)
 	if err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 	}
 
 	for page := 1; page <= int(math.Ceil(float64(tagsCount.Count)/pageSize)); page++ {
-		resp, err := a.req.Method(http.MethodGet).Path(fmt.Sprintf("/repositories/%s/tags/?page_size=%d&page=%d", image, pageSize, page)).Send(ctx, nil)
+		resp, err := a.req.Method(http.MethodGet).Path("/repositories/%s/tags/?page_size=%d&page=%d", image, pageSize, page).Send(ctx, nil)
 		if err != nil {
 			return err
 		}
@@ -111,7 +111,7 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 
 // Delete a tag
 func (a App) Delete(ctx context.Context, image, tag string) error {
-	resp, err := a.req.Method(http.MethodDelete).Path(fmt.Sprintf("/repositories/%s/tags/%s/", image, tag)).Send(ctx, nil)
+	resp, err := a.req.Method(http.MethodDelete).Path("/repositories/%s/tags/%s/", image, tag).Send(ctx, nil)
 	if err != nil {
 		return fmt.Errorf("delete tag: %w", err)
 	}
