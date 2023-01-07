@@ -129,7 +129,7 @@ func login(ctx context.Context, username, password string) (string, error) {
 		"password": password,
 	}
 
-	resp, err := request.Post("https://hub.docker.com/v2/users/login/").AcceptJSON().JSON(context.Background(), loginPayload)
+	resp, err := request.Post("https://hub.docker.com/v2/users/login/").AcceptJSON().JSON(ctx, loginPayload)
 	if err != nil {
 		return "", fmt.Errorf("login to Docker Hub: %w", err)
 	}

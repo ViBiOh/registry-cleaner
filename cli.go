@@ -49,13 +49,15 @@ func main() {
 	logger.Global(logger.New(loggerConfig))
 	defer logger.Close()
 
+	ctx := context.Background()
+
 	registryURL, imageName, matcher := checkParam(*url, *image, *grep, *list)
 
 	var service RegistryService
 	var err error
 
 	if registryURL == dockerHub {
-		service, err = hub.New(context.Background(), *username, *password, *owner)
+		service, err = hub.New(ctx, *username, *password, *owner)
 	} else {
 		service, err = registry.New(registryURL, *username, *password)
 	}
@@ -65,7 +67,7 @@ func main() {
 	}
 
 	if *list {
-		repositories, err := service.Repositories(context.Background())
+		repositories, err := service.Repositories(ctx)
 		if err != nil {
 			logger.Fatal(fmt.Errorf("list repositories: %w", err))
 		}
@@ -79,7 +81,7 @@ func main() {
 
 	limiter := concurrent.NewLimited(uint64(runtime.NumCPU()))
 
-	err = service.Tags(context.Background(), imageName, func(tag string) {
+	err = service.Tags(ctx, imageName, func(tag string) {
 		if !matcher.MatchString(tag) {
 			return
 		}
