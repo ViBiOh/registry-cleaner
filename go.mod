@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/ViBiOh/flags v1.2.0
-	github.com/ViBiOh/httputils/v4 v4.53.0
+	github.com/ViBiOh/httputils/v4 v4.53.1
 	github.com/heroku/docker-registry-client v0.0.0-20211012143308-9463674c8930
 )
 
