@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/ViBiOh/flags v1.2.0
-	github.com/ViBiOh/httputils/v4 v4.53.7
+	github.com/ViBiOh/httputils/v4 v4.53.8
 	github.com/heroku/docker-registry-client v0.0.0-20211012143308-9463674c8930
 )
 
@@ -17,12 +17,12 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.39.0 // indirect
-	go.opentelemetry.io/otel v1.13.0 // indirect
-	go.opentelemetry.io/otel/exporters/jaeger v1.13.0 // indirect
-	go.opentelemetry.io/otel/metric v0.36.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.13.0 // indirect
-	go.opentelemetry.io/otel/trace v1.13.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.40.0 // indirect
+	go.opentelemetry.io/otel v1.14.0 // indirect
+	go.opentelemetry.io/otel/exporters/jaeger v1.14.0 // indirect
+	go.opentelemetry.io/otel/metric v0.37.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.14.0 // indirect
+	go.opentelemetry.io/otel/trace v1.14.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
 )
