@@ -33,16 +33,16 @@ func main() {
 
 	loggerConfig := logger.Flags(fs, "logger")
 
-	url := flags.String(fs, "", "registry", "URL", "Registry URL", dockerHub, nil)
-	username := flags.String(fs, "", "registry", "Username", "Registry username", "", nil)
-	owner := flags.String(fs, "", "registry", "Owner", "For Docker Hub, fallback to username if not defined", "", nil)
-	password := flags.String(fs, "", "registry", "Password", "Registry password", "", nil)
-	image := flags.String(fs, "", "registry", "Image", "Image name", "", nil)
-	grep := flags.String(fs, "", "cleaner", "Grep", "Matching tags regexp", "", nil)
-	last := flags.Bool(fs, "", "cleaner", "Last", "Keep only last tag found, in alphabetic order", false, nil)
-	invert := flags.Bool(fs, "", "cleaner", "Invert", "Invert alphabetic order", false, nil)
-	delete := flags.Bool(fs, "", "cleaner", "Delete", "Perform delete", false, nil)
-	list := flags.Bool(fs, "", "cleaner", "List", "List repositories and doesn't do anything else", false, nil)
+	url := flags.New("URL", "Registry URL").DocPrefix("registry").String(fs, dockerHub, nil)
+	username := flags.New("Username", "Registry username").DocPrefix("registry").String(fs, "", nil)
+	owner := flags.New("Owner", "For Docker Hub, fallback to username if not defined").DocPrefix("registry").String(fs, "", nil)
+	password := flags.New("Password", "Registry password").DocPrefix("registry").String(fs, "", nil)
+	image := flags.New("Image", "Image name").DocPrefix("registry").String(fs, "", nil)
+	grep := flags.New("Grep", "Matching tags regexp").DocPrefix("cleaner").String(fs, "", nil)
+	last := flags.New("Last", "Keep only last tag found, in alphabetic order").DocPrefix("cleaner").Bool(fs, false, nil)
+	invert := flags.New("Invert", "Invert alphabetic order").DocPrefix("cleaner").Bool(fs, false, nil)
+	delete := flags.New("Delete", "Perform delete").DocPrefix("cleaner").Bool(fs, false, nil)
+	list := flags.New("List", "List repositories and doesn't do anything else").DocPrefix("cleaner").Bool(fs, false, nil)
 
 	logger.Fatal(fs.Parse(os.Args[1:]))
 
