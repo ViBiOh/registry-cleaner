@@ -30,6 +30,7 @@ type RegistryService interface {
 
 func main() {
 	fs := flag.NewFlagSet("registry-cleaner", flag.ExitOnError)
+	fs.Usage = flags.Usage(fs)
 
 	loggerConfig := logger.Flags(fs, "logger")
 
