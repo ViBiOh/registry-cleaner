@@ -80,7 +80,7 @@ func main() {
 	var lastTag string
 	var handled bool
 
-	limiter := concurrent.NewLimited(uint64(runtime.NumCPU()))
+	limiter := concurrent.NewLimited(runtime.NumCPU())
 
 	err = service.Tags(ctx, imageName, func(tag string) {
 		if !matcher.MatchString(tag) {
