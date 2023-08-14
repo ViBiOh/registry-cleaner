@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 	"regexp"
 	"runtime"
@@ -45,7 +45,10 @@ func main() {
 	delete := flags.New("Delete", "Perform delete").DocPrefix("cleaner").Bool(fs, false, nil)
 	list := flags.New("List", "List repositories and doesn't do anything else").DocPrefix("cleaner").Bool(fs, false, nil)
 
-	logger.Fatal(fs.Parse(os.Args[1:]))
+	if err := fs.Parse(os.Args[1:]); err != nil {
+		slog.Error("parse flags", "err", err)
+		os.Exit(1)
+	}
 
 	logger.Global(logger.New(loggerConfig))
 	defer logger.Close()
@@ -64,13 +67,15 @@ func main() {
 	}
 
 	if err != nil {
-		logger.Fatal(fmt.Errorf("create registry client: %w", err))
+		slog.Error("create registry client", "err", err)
+		os.Exit(1)
 	}
 
 	if *list {
 		repositories, err := service.Repositories(ctx)
 		if err != nil {
-			logger.Fatal(fmt.Errorf("list repositories: %w", err))
+			slog.Error("list repositories", "err", err)
+			os.Exit(1)
 		}
 
 		fmt.Printf("%s", strings.Join(repositories, "\n"))
@@ -99,7 +104,8 @@ func main() {
 	})
 
 	if err != nil {
-		logger.Fatal(fmt.Errorf("list tags: %w", err))
+		slog.Error("list tags", "err", err)
+		os.Exit(1)
 	}
 
 	limiter.Wait()
@@ -120,20 +126,22 @@ func lastHandler(service RegistryService, invert, delete bool, image, tag, lastT
 
 func tagHandler(service RegistryService, delete bool, image, tag string) {
 	if !delete {
-		logger.Warn("%s:%s is eligible to deletion", image, tag)
+		slog.Warn("eligible to deletion", "image", image, "tag", tag)
 		return
 	}
 
 	if err := service.Delete(context.Background(), image, tag); err != nil {
-		logger.Fatal(fmt.Errorf("delete `%s:%s`: %w", image, tag, err))
+		slog.Error("delete", "err", err, "image", image, "tag", tag)
+		os.Exit(1)
 	}
-	logger.Info("%s:%s deleted!", image, tag)
+	slog.Info("deleted", "image", image, "tag", tag)
 }
 
 func checkParam(url, image, grep string, list bool) (string, string, *regexp.Regexp) {
 	registryURL := strings.TrimSpace(url)
 	if len(registryURL) == 0 {
-		logger.Fatal(errors.New("url is required"))
+		slog.Error("url is required")
+		os.Exit(1)
 	}
 
 	if list {
@@ -142,21 +150,25 @@ func checkParam(url, image, grep string, list bool) (string, string, *regexp.Reg
 
 	imageName := strings.ToLower(strings.TrimSpace(image))
 	if len(imageName) == 0 {
-		logger.Fatal(errors.New("image is required"))
+		slog.Error("image is required")
+		os.Exit(1)
 	}
 
 	grepValue := strings.TrimSpace(grep)
 	if len(grepValue) == 0 {
-		logger.Fatal(errors.New("grep pattern is required"))
+		slog.Error("grep pattern is required")
+		os.Exit(1)
 	}
 
 	matcher, err := regexp.Compile(grepValue)
 	if err != nil {
-		logger.Fatal(fmt.Errorf("compile grep regexp: %w", err))
+		slog.Error("compile grep regexp", "err", err)
+		os.Exit(1)
 	}
 
 	if err != nil {
-		logger.Fatal(fmt.Errorf("create registry client: %w", err))
+		slog.Error("create registry client", "err", err)
+		os.Exit(1)
 	}
 
 	return registryURL, imageName, matcher

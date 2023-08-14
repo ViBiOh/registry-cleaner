@@ -3,8 +3,8 @@ package registry
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
-	"github.com/ViBiOh/httputils/v4/pkg/logger"
 	"github.com/heroku/docker-registry-client/registry"
 )
 
@@ -20,7 +20,9 @@ func New(url, username, password string) (App, error) {
 		return App{}, err
 	}
 
-	client.Logf = logger.Info
+	client.Logf = func(format string, args ...interface{}) {
+		slog.Info(fmt.Sprintf(format, args))
+	}
 
 	return App{
 		client: client,
