@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
 	"log/slog"
 	"os"
 	"regexp"
@@ -46,8 +47,7 @@ func main() {
 	list := flags.New("List", "List repositories and doesn't do anything else").DocPrefix("cleaner").Bool(fs, false, nil)
 
 	if err := fs.Parse(os.Args[1:]); err != nil {
-		slog.Error("parse flags", "err", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	logger.Global(logger.New(loggerConfig))
