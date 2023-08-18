@@ -28,34 +28,19 @@ Be careful when using the CLI values, if someone list the processes on the syste
 
 ```bash
 Usage of registry-cleaner:
-  -delete
-        [cleaner] Perform delete {REGISTRY_CLEANER_DELETE}
-  -grep string
-        [cleaner] Matching tags regexp {REGISTRY_CLEANER_GREP}
-  -image string
-        [registry] Image name {REGISTRY_CLEANER_IMAGE}
-  -invert
-        [cleaner] Invert alphabetic order {REGISTRY_CLEANER_INVERT}
-  -last
-        [cleaner] Keep only last tag found, in alphabetic order {REGISTRY_CLEANER_LAST}
-  -list
-        [cleaner] List repositories and doesn't do anything else {REGISTRY_CLEANER_LIST}
-  -loggerJson
-        [logger] Log format as JSON {REGISTRY_CLEANER_LOGGER_JSON}
-  -loggerLevel string
-        [logger] Logger level {REGISTRY_CLEANER_LOGGER_LEVEL} (default "INFO")
-  -loggerLevelKey string
-        [logger] Key for level in JSON {REGISTRY_CLEANER_LOGGER_LEVEL_KEY} (default "level")
-  -loggerMessageKey string
-        [logger] Key for message in JSON {REGISTRY_CLEANER_LOGGER_MESSAGE_KEY} (default "message")
-  -loggerTimeKey string
-        [logger] Key for timestamp in JSON {REGISTRY_CLEANER_LOGGER_TIME_KEY} (default "time")
-  -owner string
-        [registry] For Docker Hub, fallback to username if not defined {REGISTRY_CLEANER_OWNER}
-  -password string
-        [registry] Registry password {REGISTRY_CLEANER_PASSWORD}
-  -uRL string
-        [registry] Registry URL {REGISTRY_CLEANER_URL} (default "https://registry-1.docker.io/")
-  -username string
-        [registry] Registry username {REGISTRY_CLEANER_USERNAME}
+  --delete                    [cleaner] Perform delete ${REGISTRY_CLEANER_DELETE} (default false)
+  --grep              string  [cleaner] Matching tags regexp ${REGISTRY_CLEANER_GREP}
+  --image             string  [registry] Image name ${REGISTRY_CLEANER_IMAGE}
+  --invert                    [cleaner] Invert alphabetic order ${REGISTRY_CLEANER_INVERT} (default false)
+  --last                      [cleaner] Keep only last tag found, in alphabetic order ${REGISTRY_CLEANER_LAST} (default false)
+  --list                      [cleaner] List repositories and doesn't do anything else ${REGISTRY_CLEANER_LIST} (default false)
+  --loggerJson                [logger] Log format as JSON ${REGISTRY_CLEANER_LOGGER_JSON} (default false)
+  --loggerLevel       string  [logger] Logger level ${REGISTRY_CLEANER_LOGGER_LEVEL} (default "INFO")
+  --loggerLevelKey    string  [logger] Key for level in JSON ${REGISTRY_CLEANER_LOGGER_LEVEL_KEY} (default "level")
+  --loggerMessageKey  string  [logger] Key for message in JSON ${REGISTRY_CLEANER_LOGGER_MESSAGE_KEY} (default "msg")
+  --loggerTimeKey     string  [logger] Key for timestamp in JSON ${REGISTRY_CLEANER_LOGGER_TIME_KEY} (default "time")
+  --owner             string  [registry] For Docker Hub, fallback to username if not defined ${REGISTRY_CLEANER_OWNER}
+  --password          string  [registry] Registry password ${REGISTRY_CLEANER_PASSWORD}
+  --uRL               string  [registry] Registry URL ${REGISTRY_CLEANER_URL} (default "https://registry-1.docker.io/")
+  --username          string  [registry] Registry username ${REGISTRY_CLEANER_USERNAME}
 ```
