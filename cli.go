@@ -50,8 +50,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	logger.Global(logger.New(loggerConfig))
-	defer logger.Close()
+	logger.Init(loggerConfig)
 
 	ctx := context.Background()
 
