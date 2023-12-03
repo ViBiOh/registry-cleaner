@@ -54,7 +54,7 @@ func main() {
 
 	ctx := context.Background()
 
-	registryURL, imageName, matcher := checkParam(*url, *image, *grep, *list)
+	registryURL, imageName, matcher := checkParam(ctx, *url, *image, *grep, *list)
 
 	var service RegistryService
 	var err error
@@ -66,14 +66,14 @@ func main() {
 	}
 
 	if err != nil {
-		slog.Error("create registry client", "err", err)
+		slog.ErrorContext(ctx, "create registry client", "err", err)
 		os.Exit(1)
 	}
 
 	if *list {
 		repositories, err := service.Repositories(ctx)
 		if err != nil {
-			slog.Error("list repositories", "err", err)
+			slog.ErrorContext(ctx, "list repositories", "err", err)
 			os.Exit(1)
 		}
 
@@ -92,54 +92,54 @@ func main() {
 		}
 
 		if *last {
-			if lastTag, handled = lastHandler(service, *invert, *delete, imageName, tag, lastTag); handled {
+			if lastTag, handled = lastHandler(ctx, service, *invert, *delete, imageName, tag, lastTag); handled {
 				return
 			}
 		}
 
 		limiter.Go(func() {
-			tagHandler(service, *delete, imageName, tag)
+			tagHandler(ctx, service, *delete, imageName, tag)
 		})
 	})
 
 	if err != nil {
-		slog.Error("list tags", "err", err)
+		slog.ErrorContext(ctx, "list tags", "err", err)
 		os.Exit(1)
 	}
 
 	limiter.Wait()
 }
 
-func lastHandler(service RegistryService, invert, delete bool, image, tag, lastTag string) (string, bool) {
+func lastHandler(ctx context.Context, service RegistryService, invert, delete bool, image, tag, lastTag string) (string, bool) {
 	if len(lastTag) == 0 {
 		return tag, true
 	}
 
 	if (invert && tag < lastTag) || tag > lastTag {
-		tagHandler(service, delete, image, lastTag)
+		tagHandler(ctx, service, delete, image, lastTag)
 		return tag, true
 	}
 
 	return lastTag, false
 }
 
-func tagHandler(service RegistryService, delete bool, image, tag string) {
+func tagHandler(ctx context.Context, service RegistryService, delete bool, image, tag string) {
 	if !delete {
 		slog.Warn("eligible to deletion", "image", image, "tag", tag)
 		return
 	}
 
 	if err := service.Delete(context.Background(), image, tag); err != nil {
-		slog.Error("delete", "err", err, "image", image, "tag", tag)
+		slog.ErrorContext(ctx, "delete", "err", err, "image", image, "tag", tag)
 		os.Exit(1)
 	}
 	slog.Info("deleted", "image", image, "tag", tag)
 }
 
-func checkParam(url, image, grep string, list bool) (string, string, *regexp.Regexp) {
+func checkParam(ctx context.Context, url, image, grep string, list bool) (string, string, *regexp.Regexp) {
 	registryURL := strings.TrimSpace(url)
 	if len(registryURL) == 0 {
-		slog.Error("url is required")
+		slog.ErrorContext(ctx, "url is required")
 		os.Exit(1)
 	}
 
@@ -149,24 +149,24 @@ func checkParam(url, image, grep string, list bool) (string, string, *regexp.Reg
 
 	imageName := strings.ToLower(strings.TrimSpace(image))
 	if len(imageName) == 0 {
-		slog.Error("image is required")
+		slog.ErrorContext(ctx, "image is required")
 		os.Exit(1)
 	}
 
 	grepValue := strings.TrimSpace(grep)
 	if len(grepValue) == 0 {
-		slog.Error("grep pattern is required")
+		slog.ErrorContext(ctx, "grep pattern is required")
 		os.Exit(1)
 	}
 
 	matcher, err := regexp.Compile(grepValue)
 	if err != nil {
-		slog.Error("compile grep regexp", "err", err)
+		slog.ErrorContext(ctx, "compile grep regexp", "err", err)
 		os.Exit(1)
 	}
 
 	if err != nil {
-		slog.Error("create registry client", "err", err)
+		slog.ErrorContext(ctx, "create registry client", "err", err)
 		os.Exit(1)
 	}
 
