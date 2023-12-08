@@ -66,14 +66,14 @@ func main() {
 	}
 
 	if err != nil {
-		slog.ErrorContext(ctx, "create registry client", "err", err)
+		slog.ErrorContext(ctx, "create registry client", "error", err)
 		os.Exit(1)
 	}
 
 	if *list {
 		repositories, err := service.Repositories(ctx)
 		if err != nil {
-			slog.ErrorContext(ctx, "list repositories", "err", err)
+			slog.ErrorContext(ctx, "list repositories", "error", err)
 			os.Exit(1)
 		}
 
@@ -103,7 +103,7 @@ func main() {
 	})
 
 	if err != nil {
-		slog.ErrorContext(ctx, "list tags", "err", err)
+		slog.ErrorContext(ctx, "list tags", "error", err)
 		os.Exit(1)
 	}
 
@@ -130,7 +130,7 @@ func tagHandler(ctx context.Context, service RegistryService, delete bool, image
 	}
 
 	if err := service.Delete(context.Background(), image, tag); err != nil {
-		slog.ErrorContext(ctx, "delete", "err", err, "image", image, "tag", tag)
+		slog.ErrorContext(ctx, "delete", "error", err, "image", image, "tag", tag)
 		os.Exit(1)
 	}
 	slog.Info("deleted", "image", image, "tag", tag)
@@ -161,12 +161,12 @@ func checkParam(ctx context.Context, url, image, grep string, list bool) (string
 
 	matcher, err := regexp.Compile(grepValue)
 	if err != nil {
-		slog.ErrorContext(ctx, "compile grep regexp", "err", err)
+		slog.ErrorContext(ctx, "compile grep regexp", "error", err)
 		os.Exit(1)
 	}
 
 	if err != nil {
-		slog.ErrorContext(ctx, "create registry client", "err", err)
+		slog.ErrorContext(ctx, "create registry client", "error", err)
 		os.Exit(1)
 	}
 
