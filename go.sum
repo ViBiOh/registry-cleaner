@@ -1,8 +1,8 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/OpenPeeDeeP/depguard v1.0.0/go.mod h1:7/4sitnI9YlQgTLLk734QlzXT8DuHVnAyztLplQjk+o=
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
-github.com/ViBiOh/flags v1.4.1 h1:qEAO70rWTYcVlU9BgCuz0SgMjth12oi502cq3SHDudg=
-github.com/ViBiOh/flags v1.4.1/go.mod h1:Ocgx/QhY7WYNfGokFT3kw5C05pDooQyLbI/9ZWwylI4=
+github.com/ViBiOh/flags v1.5.0 h1:nwuFS8tAwtV6rTPpv2pCB+r12WjZYLjluW7yT+SeVpQ=
+github.com/ViBiOh/flags v1.5.0/go.mod h1:39UMuTnKsIp6walgD8dK99KRCb4DJt9vPtbWehHh1T0=
 github.com/ViBiOh/httputils/v4 v4.69.10 h1:Me+aF/i9AC+G2ADwa4k9RCcmAlw5bEE4AcmR6eSPc24=
 github.com/ViBiOh/httputils/v4 v4.69.10/go.mod h1:QBkpuYRlvcQNbVdJOepFN3vnrsrkyqg4NlU05tQISo4=
 github.com/cenkalti/backoff/v4 v4.2.1 h1:y4OZtCnogmCPw98Zjyt5a6+QwPLGkiQsYW5oUqylYbM=
