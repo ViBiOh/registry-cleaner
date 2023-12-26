@@ -65,10 +65,7 @@ func main() {
 		service, err = registry.New(registryURL, *username, *password)
 	}
 
-	if err != nil {
-		slog.ErrorContext(ctx, "create registry client", "error", err)
-		os.Exit(1)
-	}
+	logger.FatalfOnErr(ctx, err, "create registry client")
 
 	if *list {
 		repositories, err := service.Repositories(ctx)
@@ -102,10 +99,7 @@ func main() {
 		})
 	})
 
-	if err != nil {
-		slog.ErrorContext(ctx, "list tags", "error", err)
-		os.Exit(1)
-	}
+	logger.FatalfOnErr(ctx, err, "list tags")
 
 	limiter.Wait()
 }
@@ -160,15 +154,9 @@ func checkParam(ctx context.Context, url, image, grep string, list bool) (string
 	}
 
 	matcher, err := regexp.Compile(grepValue)
-	if err != nil {
-		slog.ErrorContext(ctx, "compile grep regexp", "error", err)
-		os.Exit(1)
-	}
+	logger.FatalfOnErr(ctx, err, "compile grep regexp")
 
-	if err != nil {
-		slog.ErrorContext(ctx, "create registry client", "error", err)
-		os.Exit(1)
-	}
+	logger.FatalfOnErr(ctx, err, "create registry client")
 
 	return registryURL, imageName, matcher
 }
