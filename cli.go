@@ -70,7 +70,7 @@ func main() {
 	if *list {
 		repositories, err := service.Repositories(ctx)
 		if err != nil {
-			slog.ErrorContext(ctx, "list repositories", "error", err)
+			slog.LogAttrs(ctx, slog.LevelError, "list repositories", slog.Any("error", err))
 			os.Exit(1)
 		}
 
@@ -119,15 +119,15 @@ func lastHandler(ctx context.Context, service RegistryService, invert, delete bo
 
 func tagHandler(ctx context.Context, service RegistryService, delete bool, image, tag string) {
 	if !delete {
-		slog.Warn("eligible to deletion", "image", image, "tag", tag)
+		slog.LogAttrs(ctx, slog.LevelWarn, "eligible to deletion", slog.String("image", image), slog.String("tag", tag))
 		return
 	}
 
 	if err := service.Delete(context.Background(), image, tag); err != nil {
-		slog.ErrorContext(ctx, "delete", "error", err, "image", image, "tag", tag)
+		slog.LogAttrs(ctx, slog.LevelError, "delete", slog.String("image", image), slog.String("tag", tag), slog.Any("error", err))
 		os.Exit(1)
 	}
-	slog.Info("deleted", "image", image, "tag", tag)
+	slog.LogAttrs(ctx, slog.LevelInfo, "deleted", slog.String("image", image), slog.String("tag", tag))
 }
 
 func checkParam(ctx context.Context, url, image, grep string, list bool) (string, string, *regexp.Regexp) {
