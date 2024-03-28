@@ -2,7 +2,6 @@
 
 [![Build](https://github.com/ViBiOh/registry-cleaner/workflows/Build/badge.svg)](https://github.com/ViBiOh/registry-cleaner/actions)
 [![codecov](https://codecov.io/gh/ViBiOh/registry-cleaner/branch/main/graph/badge.svg)](https://codecov.io/gh/ViBiOh/registry-cleaner)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ViBiOh_registry-cleaner&metric=alert_status)](https://sonarcloud.io/dashboard?id=ViBiOh_registry-cleaner)
 
 ## Getting started
 
