@@ -101,6 +101,10 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 		if err = httpjson.Stream(resp.Body, tags, "results", false); err != nil {
 			return fmt.Errorf("parse json: %w", err)
 		}
+
+		if err := request.DiscardBody(resp.Body); err != nil {
+			return fmt.Errorf("discard body: %w", err)
+		}
 	}
 
 	close(tags)
