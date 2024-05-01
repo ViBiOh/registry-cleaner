@@ -1,7 +1,6 @@
 # registry-cleaner
 
 [![Build](https://github.com/ViBiOh/registry-cleaner/workflows/Build/badge.svg)](https://github.com/ViBiOh/registry-cleaner/actions)
-[![codecov](https://codecov.io/gh/ViBiOh/registry-cleaner/branch/main/graph/badge.svg)](https://codecov.io/gh/ViBiOh/registry-cleaner)
 
 ## Getting started
 
