@@ -47,9 +47,9 @@ func main() {
 
 	_ = fs.Parse(os.Args[1:])
 
-	logger.Init(loggerConfig)
-
 	ctx := context.Background()
+
+	logger.Init(ctx, loggerConfig)
 
 	registryURL, imageName, matcher := checkParam(ctx, *url, *image, *grep, *list)
 
