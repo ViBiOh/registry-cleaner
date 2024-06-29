@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log/slog"
 	"os"
@@ -10,7 +9,6 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/ViBiOh/flags"
 	"github.com/ViBiOh/httputils/v4/pkg/concurrent"
 	"github.com/ViBiOh/httputils/v4/pkg/logger"
 	"github.com/ViBiOh/registry-cleaner/pkg/hub"
@@ -29,42 +27,25 @@ type RegistryService interface {
 }
 
 func main() {
-	fs := flag.NewFlagSet("registry-cleaner", flag.ExitOnError)
-	fs.Usage = flags.Usage(fs)
-
-	loggerConfig := logger.Flags(fs, "logger")
-
-	url := flags.New("URL", "Registry URL").DocPrefix("registry").String(fs, dockerHub, nil)
-	username := flags.New("Username", "Registry username").DocPrefix("registry").String(fs, "", nil)
-	owner := flags.New("Owner", "For Docker Hub, fallback to username if not defined").DocPrefix("registry").String(fs, "", nil)
-	password := flags.New("Password", "Registry password").DocPrefix("registry").String(fs, "", nil)
-	image := flags.New("Image", "Image name").DocPrefix("registry").String(fs, "", nil)
-	grep := flags.New("Grep", "Matching tags regexp").DocPrefix("cleaner").String(fs, "", nil)
-	last := flags.New("Last", "Keep only last tag found, in alphabetic order").DocPrefix("cleaner").Bool(fs, false, nil)
-	invert := flags.New("Invert", "Invert alphabetic order").DocPrefix("cleaner").Bool(fs, false, nil)
-	delete := flags.New("Delete", "Perform delete").DocPrefix("cleaner").Bool(fs, false, nil)
-	list := flags.New("List", "List repositories and doesn't do anything else").DocPrefix("cleaner").Bool(fs, false, nil)
-
-	_ = fs.Parse(os.Args[1:])
+	config := newConfig()
 
 	ctx := context.Background()
+	logger.Init(ctx, config.logger)
 
-	logger.Init(ctx, loggerConfig)
-
-	registryURL, imageName, matcher := checkParam(ctx, *url, *image, *grep, *list)
+	registryURL, imageName, matcher := checkParam(ctx, *config.url, *config.image, *config.grep, *config.list)
 
 	var service RegistryService
 	var err error
 
 	if registryURL == dockerHub {
-		service, err = hub.New(ctx, *username, *password, *owner)
+		service, err = hub.New(ctx, *config.username, *config.password, *config.owner)
 	} else {
-		service, err = registry.New(registryURL, *username, *password)
+		service, err = registry.New(registryURL, *config.username, *config.password)
 	}
 
 	logger.FatalfOnErr(ctx, err, "create registry client")
 
-	if *list {
+	if *config.list {
 		repositories, err := service.Repositories(ctx)
 		if err != nil {
 			slog.LogAttrs(ctx, slog.LevelError, "list repositories", slog.Any("error", err))
@@ -85,14 +66,14 @@ func main() {
 			return
 		}
 
-		if *last {
-			if lastTag, handled = lastHandler(ctx, service, *invert, *delete, imageName, tag, lastTag); handled {
+		if *config.last {
+			if lastTag, handled = lastHandler(ctx, service, *config.invert, *config.delete, imageName, tag, lastTag); handled {
 				return
 			}
 		}
 
 		limiter.Go(func() {
-			tagHandler(ctx, service, *delete, imageName, tag)
+			tagHandler(ctx, service, *config.delete, imageName, tag)
 		})
 	})
 
