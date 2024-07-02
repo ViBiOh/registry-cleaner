@@ -6,7 +6,7 @@ toolchain go1.22.0
 
 require (
 	github.com/ViBiOh/flags v1.5.0
-	github.com/ViBiOh/httputils/v4 v4.77.3
+	github.com/ViBiOh/httputils/v4 v4.78.0
 	github.com/heroku/docker-registry-client v0.0.0-20211012143308-9463674c8930
 )
 
