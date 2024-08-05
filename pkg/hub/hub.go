@@ -56,8 +56,8 @@ func (a App) Repositories(ctx context.Context) ([]string, error) {
 		return nil, err
 	}
 
-	var repositories []listResult
-	if err = httpjson.Read(resp, &repositories); err != nil {
+	repositories, err := httpjson.Read[[]listResult](resp)
+	if err != nil {
 		return nil, fmt.Errorf("parse json: %w", err)
 	}
 
@@ -87,8 +87,8 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 		return err
 	}
 
-	var tagsCount tagResponse
-	if err = httpjson.Read(resp, &tagsCount); err != nil {
+	tagsCount, err := httpjson.Read[tagResponse](resp)
+	if err != nil {
 		return fmt.Errorf("parse tags' count: %w", err)
 	}
 
@@ -138,8 +138,8 @@ func login(ctx context.Context, username, password string) (string, error) {
 		return "", fmt.Errorf("login to Docker Hub: %w", err)
 	}
 
-	var output map[string]string
-	if err = httpjson.Read(resp, &output); err != nil {
+	output, err := httpjson.Read[map[string]string](resp)
+	if err != nil {
 		return "", fmt.Errorf("parse login response from Docker Hub: %w", err)
 	}
 
