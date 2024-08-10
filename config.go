@@ -35,7 +35,7 @@ func newConfig() configuration {
 		owner:    flags.New("Owner", "For Docker Hub, fallback to username if not defined").DocPrefix("registry").String(fs, "", nil),
 		password: flags.New("Password", "Registry password").DocPrefix("registry").String(fs, "", nil),
 		image:    flags.New("Image", "Image name").DocPrefix("registry").String(fs, "", nil),
-		grep:     flags.New("Grep", "Matching tags regexp").DocPrefix("cleaner").String(fs, "", nil),
+		grep:     flags.New("Grep", "Matching tags regexp, the capturing name tagBucket determine the bucket for getting the last").DocPrefix("cleaner").String(fs, "", nil),
 		last:     flags.New("Last", "Keep only last tag found, in alphabetic order").DocPrefix("cleaner").Bool(fs, false, nil),
 		invert:   flags.New("Invert", "Invert alphabetic order").DocPrefix("cleaner").Bool(fs, false, nil),
 		delete:   flags.New("Delete", "Perform delete").DocPrefix("cleaner").Bool(fs, false, nil),
