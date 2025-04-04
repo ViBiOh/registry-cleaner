@@ -8,12 +8,10 @@ import (
 	"github.com/heroku/docker-registry-client/registry"
 )
 
-// App of package
 type App struct {
 	client *registry.Registry
 }
 
-// New creates new App from Config
 func New(url, username, password string) (App, error) {
 	client, err := registry.New(url, username, password)
 	if err != nil {
@@ -24,17 +22,13 @@ func New(url, username, password string) (App, error) {
 		slog.Info(fmt.Sprintf(format, args))
 	}
 
-	return App{
-		client: client,
-	}, nil
+	return App{client: client}, nil
 }
 
-// Repositories list repositories
 func (a App) Repositories(_ context.Context) ([]string, error) {
 	return a.client.Repositories()
 }
 
-// Tags list tags for a given image
 func (a App) Tags(ctx context.Context, image string, handler func(string)) error {
 	tags, err := a.client.Tags(image)
 	if err != nil {
@@ -48,7 +42,6 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 	return nil
 }
 
-// Delete a tag
 func (a App) Delete(_ context.Context, image, tag string) error {
 	digest, err := a.client.ManifestDigest(image, tag)
 	if err != nil {

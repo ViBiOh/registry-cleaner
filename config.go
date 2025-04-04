@@ -24,13 +24,13 @@ type configuration struct {
 }
 
 func newConfig() configuration {
-	fs := flag.NewFlagSet("kitten", flag.ExitOnError)
+	fs := flag.NewFlagSet("registry-cleaner", flag.ExitOnError)
 	fs.Usage = flags.Usage(fs)
 
 	config := configuration{
 		logger: logger.Flags(fs, "logger"),
 
-		url:      flags.New("URL", "Registry URL").DocPrefix("registry").String(fs, dockerHub, nil),
+		url:      flags.New("Url", "Registry URL").DocPrefix("registry").String(fs, dockerHub, nil),
 		username: flags.New("Username", "Registry username").DocPrefix("registry").String(fs, "", nil),
 		owner:    flags.New("Owner", "For Docker Hub, fallback to username if not defined").DocPrefix("registry").String(fs, "", nil),
 		password: flags.New("Password", "Registry password").DocPrefix("registry").String(fs, "", nil),

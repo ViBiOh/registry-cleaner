@@ -25,7 +25,7 @@ func main() {
 	logger.FatalfOnErr(ctx, err, "create registry client")
 
 	if *config.list {
-		listRepositories(ctx, service)
+		listRepositories(ctx, service, imageName)
 		return
 	}
 
@@ -111,11 +111,12 @@ func checkParam(ctx context.Context, url, image, grep string, list bool) (string
 		logger.FatalfOnErr(ctx, errors.New("url is required"), "check url")
 	}
 
+	imageName := strings.ToLower(strings.TrimSpace(image))
+
 	if list {
-		return registryURL, "", nil, 0
+		return registryURL, imageName, nil, 0
 	}
 
-	imageName := strings.ToLower(strings.TrimSpace(image))
 	if len(imageName) == 0 {
 		logger.FatalfOnErr(ctx, errors.New("image is required"), "check image")
 	}
