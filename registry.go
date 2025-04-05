@@ -5,6 +5,7 @@ import (
 
 	"github.com/ViBiOh/registry-cleaner/pkg/hub"
 	"github.com/ViBiOh/registry-cleaner/pkg/registry"
+	"github.com/docker/distribution"
 )
 
 const (
@@ -13,8 +14,12 @@ const (
 
 type RegistryService interface {
 	Repositories(context.Context) ([]string, error)
+
 	Tags(context.Context, string, func(string)) error
 	Delete(context.Context, string, string) error
+
+	GetManifest(ctx context.Context, repository, tag string) (distribution.Manifest, error)
+	PutManifest(ctx context.Context, repository, tag string, manifest distribution.Manifest) error
 }
 
 func getRegistryService(ctx context.Context, registryURL, username, password, owner string) (RegistryService, error) {

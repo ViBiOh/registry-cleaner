@@ -28,10 +28,10 @@ main() {
   var_read DOCKER_USER "$(pass_get "dev/docker" "login")"
   var_read DOCKER_PASSWORD "$(pass_get "dev/docker" "password")" "secret"
 
-  for repo in $(go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -owner "${DOCKER_OWNER}" -list); do
-    go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -image "${repo}" -delete -grep '^[a-f0-9]{7,8}($|-)'
-    go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -image "${repo}" -delete -grep '[0-9]{12}' -last
-    go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -image "${repo}" -delete -grep '^v(?P<tagBucket>\d+.\d+)(?:.\d+)' -last
+  for repo in $(go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -owner "${DOCKER_OWNER}" list); do
+    go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -image "${repo}" -grep '^[a-f0-9]{7,8}($|-)' "delete"
+    go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -image "${repo}" -grep '[0-9]{12}' -last "delete"
+    go run "${SCRIPT_DIR}" -username "${DOCKER_USER}" -password "${DOCKER_PASSWORD}" -image "${repo}" -grep '^v(?P<tagBucket>\d+.\d+)(?:.\d+)' -last "delete"
   done
 
   unset DOCKER_PASSWORD

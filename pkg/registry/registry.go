@@ -44,7 +44,7 @@ func (a App) Tags(_ context.Context, image string, handler func(string)) error {
 }
 
 func (a App) GetManifest(_ context.Context, repository, tag string) (distribution.Manifest, error) {
-	return a.client.ManifestV2(repository, tag)
+	return a.client.Manifest(repository, tag)
 }
 
 func (a App) PutManifest(_ context.Context, repository, tag string, manifest distribution.Manifest) error {
