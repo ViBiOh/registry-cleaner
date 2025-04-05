@@ -3,13 +3,9 @@ package main
 import (
 	"context"
 	"errors"
-	"log/slog"
-	"os"
 	"regexp"
-	"runtime"
 	"strings"
 
-	"github.com/ViBiOh/httputils/v4/pkg/concurrent"
 	"github.com/ViBiOh/httputils/v4/pkg/logger"
 )
 
@@ -29,80 +25,7 @@ func main() {
 		return
 	}
 
-	lastTags := make(map[string]string)
-	limiter := concurrent.NewLimiter(runtime.NumCPU())
-
-	err = service.Tags(ctx, imageName, func(tag string) {
-		tagBucket, found := getTagAndMatchTag(tag, matcher, tagIndex)
-		if !found {
-			return
-		}
-
-		if *config.last {
-			if lastHandler(ctx, service, *config.invert, *config.delete, imageName, tag, tagBucket, lastTags) {
-				return
-			}
-		}
-
-		limiter.Go(func() {
-			tagHandler(ctx, service, *config.delete, imageName, tag)
-		})
-	})
-
-	logger.FatalfOnErr(ctx, err, "list tags")
-
-	limiter.Wait()
-}
-
-func getTagAndMatchTag(tag string, matcher *regexp.Regexp, tagIndex int) (string, bool) {
-	matches := matcher.FindStringSubmatch(tag)
-	if len(matches) == 0 {
-		return "", false
-	}
-
-	if tagIndex > 0 {
-		if tagIndex < len(matches) {
-			return matches[tagIndex], true
-		}
-
-		return "", false
-	}
-
-	return "", true
-}
-
-func lastHandler(ctx context.Context, service RegistryService, invert, delete bool, image, tag, tagBucket string, lastTags map[string]string) bool {
-	if len(lastTags[tagBucket]) == 0 {
-		lastTags[tagBucket] = tag
-
-		return true
-	}
-
-	lastTag := lastTags[tagBucket]
-
-	if (invert && tag < lastTag) || tag > lastTag {
-		tagHandler(ctx, service, delete, image, lastTag)
-
-		lastTags[tagBucket] = tag
-
-		return true
-	}
-
-	return false
-}
-
-func tagHandler(ctx context.Context, service RegistryService, delete bool, image, tag string) {
-	if !delete {
-		slog.LogAttrs(ctx, slog.LevelWarn, "eligible to deletion", slog.String("image", image), slog.String("tag", tag))
-		return
-	}
-
-	if err := service.Delete(ctx, image, tag); err != nil {
-		slog.LogAttrs(ctx, slog.LevelError, "delete", slog.String("image", image), slog.String("tag", tag), slog.Any("error", err))
-		os.Exit(1)
-	}
-
-	slog.LogAttrs(ctx, slog.LevelInfo, "deleted", slog.String("image", image), slog.String("tag", tag))
+	deleteTags(ctx, service, imageName, matcher, tagIndex, *config.last, *config.invert, *config.delete)
 }
 
 func checkParam(ctx context.Context, url, image, grep string, list bool) (string, string, *regexp.Regexp, int) {

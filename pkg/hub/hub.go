@@ -2,6 +2,7 @@ package hub
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 	"net/http"
@@ -9,11 +10,11 @@ import (
 
 	"github.com/ViBiOh/httputils/v4/pkg/httpjson"
 	"github.com/ViBiOh/httputils/v4/pkg/request"
+	"github.com/docker/distribution"
 )
 
 const pageSize = 100
 
-// App of package
 type App struct {
 	owner string
 	req   request.Request
@@ -32,7 +33,6 @@ type tagResult struct {
 	Name string `json:"name"`
 }
 
-// New creates new App from Config
 func New(ctx context.Context, username, password, owner string) (App, error) {
 	jwt, err := login(ctx, username, password)
 	if err != nil {
@@ -49,7 +49,6 @@ func New(ctx context.Context, username, password, owner string) (App, error) {
 	}, nil
 }
 
-// Repositories list repositories
 func (a App) Repositories(ctx context.Context) ([]string, error) {
 	resp, err := a.req.Method(http.MethodGet).Path("/users/%s/repositories/?page_size=100", a.owner).Send(ctx, nil)
 	if err != nil {
@@ -69,7 +68,6 @@ func (a App) Repositories(ctx context.Context) ([]string, error) {
 	return output, nil
 }
 
-// Tags list tags for a given image
 func (a App) Tags(ctx context.Context, image string, handler func(string)) error {
 	done := make(chan struct{})
 	tags := make(chan tagResult, runtime.NumCPU())
@@ -113,7 +111,14 @@ func (a App) Tags(ctx context.Context, image string, handler func(string)) error
 	return nil
 }
 
-// Delete a tag
+func (a App) GetManifest(_ context.Context, repository, tag string) (distribution.Manifest, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (a App) PutManifest(_ context.Context, repository, tag string, manifest distribution.Manifest) error {
+	return errors.New("not implemented")
+}
+
 func (a App) Delete(ctx context.Context, image, tag string) error {
 	resp, err := a.req.Method(http.MethodDelete).Path("/repositories/%s/tags/%s/", image, tag).Send(ctx, nil)
 	if err != nil {
